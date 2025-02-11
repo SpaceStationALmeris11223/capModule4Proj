@@ -82,6 +82,7 @@ class DunnDelivery:
 
 
     def Review_Us(self):
+        """Allows the user to leave a review"""
         while True:
             try:
                 review_us = input("Would you like to sumbit a review of your delivery? (yes or no) ").lower()
@@ -114,7 +115,7 @@ class DunnDelivery:
                 print("Please Enter a number from 1-10 ")
             #Method to calculate total cost of order
     def calculate_total(self, items, has_student_id=False):
-                #Calcualte the total
+                #Calculate the total
                 total = sum(self.prices[item] for item in items)
 
                 #calculate discount based on student id.
@@ -123,16 +124,16 @@ class DunnDelivery:
                 #this method returns the total cost of the order to the code that called method
                 return total;
 
-#method to calculate the dilvery time based on location and time of day
+#method to calculate the deilvery time based on location and time of day
     def estimate_delivery(self,location, current_hour,step_on_it):
         #calculate the base time
         base_time =  self.delivery_location[location]
-        #Calculate the dilvery time based on the time of day
+        #Calculate the deilvery time based on the time of day
         if(9 <= current_hour <= 10) or( 11 <= current_hour <= 13):
             if step_on_it:
                 base_time = max(1, base_time -3) #got to make sure there is at least a minute for deilvery unless we teleport it to them lol
             return base_time  + 5
-        #if they aren't ordring during a bust time, return the base time with no adjustment
+        #if they aren't ordring during a busy time, return the base time with no adjustment
         return base_time
 
     def print_order(self,location,items,current_hour,has_student_id:False,step_on_it):
