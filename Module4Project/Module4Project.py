@@ -35,7 +35,7 @@ class DunnDelivery:
     def priority_order(self):
             #Reduces delivery time by 3
             step_on_it = False
-            Priority = input("Is this a priority order? (yes/no)    ").upper()
+            Priority = input("Is this a priority order? If yes there's a 2.00 fee (yes/no)    ").upper()
             if (Priority == "YES"):
                 step_on_it = True
             return step_on_it
@@ -100,7 +100,7 @@ class DunnDelivery:
                     why = input("Would you like to share why you rated us this? (yes/no) ").lower()
                     if (why == "yes"):
                         input("Please enter what you thought of your delivery   ")
-                    
+                    #while loop nested in a while loop looks very weird T_T.
                     print("Thank you for ordering from Dunn Brothers Coffee have a wonderful Day!")
                     break
 
@@ -114,15 +114,18 @@ class DunnDelivery:
             except ValueError:
                 print("Please Enter a number from 1-10 ")
             #Method to calculate total cost of order
-    def calculate_total(self, items, has_student_id=False):
+    def calculate_total(self, items, has_student_id=False, step_on_it=False):
                 #Calculate the total
                 total = sum(self.prices[item] for item in items)
 
                 #calculate discount based on student id.
                 if has_student_id and total >10:
                     total *=0.9
+                #adds a 2 dollar fee if step_on_it is true
+                if step_on_it: 
+                    total += 2.00
                 #this method returns the total cost of the order to the code that called method
-                return total;
+                return total
 
 #method to calculate the deilvery time based on location and time of day
     def estimate_delivery(self,location, current_hour,step_on_it):
@@ -136,26 +139,37 @@ class DunnDelivery:
         #if they aren't ordring during a busy time, return the base time with no adjustment
         return base_time
 
-    def print_order(self,location,items,current_hour,has_student_id:False,step_on_it):
+    def print_order(self,location,items,current_hour,step_on_it, has_student_id:False):
         #display the order infromation
         print("\n=== Order Summary===")
         print("Delivery to: {location}")
         print("\nItems Ordered:")
+
         #loop through the list of menu items they orders
         for item in items:
             print(f"- {item}: ${self.prices[item]:.2f}")
+
+        #Calculate the subtotal
+        subtotal = sum(self.prices[item] for item in items)
+
         #call the methods to get total cost and dilvery time
-        total = self.calculate_total(items, has_student_id)
+        total = self.calculate_total(items, has_student_id, step_on_it)
         delivery_time = self.estimate_delivery(location, current_hour,step_on_it)
 
         #display the subtotal
-        print(f"\nSubtotal: ${sum(self.prices[item] for item in items):.2f}")
+        print(f"\nSubtotal: ${subtotal:.2f}")
 
-        #calculate the total with discount f the customer has student id
-        if has_student_id and total < sum(self.prices[item] for item in items):
-            print("Student discount applied!")
+        #calculate the total with a 10% discount if the customer has student id
+        if has_student_id and subtotal >10:
+            print("Student discount applied! You just got 10% off!")
+            
+        #display the 2.00 fee for priority
+        if step_on_it:
+            print("Priority Order fee: $2.00 ")
+
         #display total after discount & estimated delivery time
-        print(f"Total after discount: ${total:.2f}")
+        print(f"Total after discount & priority fee: ${total:.2f}")
+        #show estimated delivery time
         print(f"Estimated delivery time: {delivery_time} minutes")
 
 #main method is executed as soon as the program runs
@@ -181,3 +195,4 @@ def main():
     #add the line of code to automatically call the main method
 if __name__ =="__main__":
         main()
+#weirdly enough displaying the priority fee took the longest for me to figure out. I had a tough time figuring out how to display the updated value
